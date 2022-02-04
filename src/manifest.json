@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "information": {
+    "name": "client-report",
+    "displayName": "Reporte de clientes",
+    "description": "Muestra el reporte de clientes bajo el criterio de fecha de inscripcion y organizacion",
+    "url": "https://github.com/andresdlm/UCRM-Client-report",
+    "version": "1.0.0",
+    "ucrmVersionCompliancy": {
+      "min": "2.14.0-beta4",
+      "max": null
+    },
+    "unmsVersionCompliancy": {
+      "min": "1.0.0-dev.1",
+      "max": null
+    },
+    "author": "Andres Linarez"
+  },
+  "menu": [
+    {
+      "key": "Reports",
+      "label": "Reporte de clientes",
+      "type": "admin",
+      "target": "iframe"
+    }
+  ]
+}
