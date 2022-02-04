@@ -51,44 +51,42 @@ if (
 
     $parameters = [
         'organizationId' => $trimNonEmpty((string) $_GET['organization']),
-        //'createdDateFrom' => $trimNonEmpty((string) $_GET['since']),
-        //'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
+        'registrationDateFrom' => $trimNonEmpty((string) $_GET['since']),
+        'registrationDateTo' => $trimNonEmpty((string) $_GET['until']),
     ];
     $parameters = array_filter($parameters);
 
-    // make sure the dates are in YYYY-MM-DD format
-    // if (($parameters['createdDateFrom'] ?? null) !== null) {
-    //     $parameters['createdDateFrom'] = new \DateTimeImmutable($parameters['createdDateFrom']);
-    //     $parameters['createdDateFrom'] = $parameters['createdDateFrom']->format('Y-m-d');
-    // }
-    // if (($parameters['createdDateTo'] ?? null) !== null) {
-    //     $parameters['createdDateTo'] = new \DateTimeImmutable($parameters['createdDateTo']);
-    //     $parameters['createdDateTo'] = $parameters['createdDateTo']->format('Y-m-d');
-    // }
-
     $organization = $api->get('organizations/' . $_GET['organization']);
     $clients = $api->get('clients/', $parameters);
-    $invoices = $api->get('invoices', $parameters);
     
     console_log($clients);
-    console_log($invoices);
 
     $clientsMap = [];
     $cantidadClientes = 0;
     foreach ($clients as $client) {
-        $cantidadClientes++;
-        $clientsMap[$client['id']] = [
-            'firstName' => $client['firstName'],
-            'lastName' => $client['lastName'],
-            'organization' => $client['organizationName'],
-            'registrationDate' => $client['registrationDate'],
-            'companyName' => $client['companyName']
-        ];
+        if (date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && date($client['registrationDate']) <= date($parameters['registrationDateTo'])) {
+            $cantidadClientes++;
+            if ($client['clientType'] == 1) {
+                $clientsMap[$client['id']] = [
+                    'firstName' => $client['firstName'],
+                    'lastName' => $client['lastName'],
+                    'registrationDate' => $client['registrationDate'],
+                    'clientType' => 'Residencial'
+                ];
+            } else if ($client['clientType'] == 2) {
+                $clientsMap[$client['id']] = [
+                    'firstName' => $client['companyName'],
+                    'lastName' => '',
+                    'registrationDate' => $client['registrationDate'],
+                    'clientType' => 'Empresarial'
+                ];
+            }
+        }
     }
 
     $result = [
         'clients' => array_values($clientsMap),
-        'cantidadClientes' => $cantidadClientes
+        'cantidadClientes' => $cantidadClientes,
     ];
 
 }
