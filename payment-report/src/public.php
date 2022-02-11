@@ -50,43 +50,46 @@ if (
     };
 
     $parameters = [
-        'organizationId' => $trimNonEmpty((string) $_GET['organization']),
-        'registrationDateFrom' => $trimNonEmpty((string) $_GET['since']),
-        'registrationDateTo' => $trimNonEmpty((string) $_GET['until']),
+        'createdDateFrom' => $trimNonEmpty((string) $_GET['since']),
+        'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
     ];
-    $parameters = array_filter($parameters);
 
     $organization = $api->get('organizations/' . $_GET['organization']);
-    $clients = $api->get('clients/', $parameters);
+    $clients = $api->get('clients/');
+    $payments = $api->get('payments/');
     
     console_log($clients);
+    console_log($payments);
 
-    $clientsMap = [];
-    $cantidadClientes = 0;
-    foreach ($clients as $client) {
-        if (date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && date($client['registrationDate']) <= date($parameters['registrationDateTo'])) {
-            $cantidadClientes++;
-            if ($client['clientType'] == 1) {
-                $clientsMap[$client['id']] = [
-                    'firstName' => $client['firstName'],
-                    'lastName' => $client['lastName'],
-                    'registrationDate' => $client['registrationDate'],
-                    'clientType' => 'Residencial'
-                ];
-            } else if ($client['clientType'] == 2) {
-                $clientsMap[$client['id']] = [
-                    'firstName' => $client['companyName'],
-                    'lastName' => '',
-                    'registrationDate' => $client['registrationDate'],
-                    'clientType' => 'Empresarial'
+    $paymentsMap = [];
+    $cantidadPagos = 0;
+    $cantidadRecibida = 0;
+    foreach ($payments as $payment) {
+        if (date($payment['createdDate']) >= date($parameters['createdDateFrom']) && 
+        date($payment['createdDate']) <= date($parameters['createdDateTo'])) {
+            $client = $api->get('clients/' . $payment['clientId']);
+
+            if ($client['organizationId'] == $organization['id']) {
+                $cantidadPagos++;
+                $cantidadRecibida = $cantidadRecibida + $payment['amount'];
+                
+                $paymentsMap[$payment['id']] = [
+                    'id' => $payment['id'],
+                    'createdDate' => $payment['createdDate'],
+                    'clientId' => $payment['clientId'],
+                    'clientName' => $client['firstName'] . ' ' . $client['lastName'],
+                    'companyName' => $client['companyName'],
+                    'amount' => $payment['amount'],
+                    'methodId' => $payment['methodId'],
                 ];
             }
         }
     }
 
     $result = [
-        'clients' => array_values($clientsMap),
-        'cantidadClientes' => $cantidadClientes,
+        'payments' => array_values($paymentsMap),
+        'cantidadPagos' => $cantidadPagos,
+        'cantidadRecibida' => $cantidadRecibida,
     ];
 
 }
