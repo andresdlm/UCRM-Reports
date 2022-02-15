@@ -50,50 +50,52 @@ if (
     };
 
     $parameters = [
-        'organizationId' => $trimNonEmpty((string) $_GET['organization']),
-        'registrationDateFrom' => $trimNonEmpty((string) $_GET['since']),
-        'registrationDateTo' => $trimNonEmpty((string) $_GET['until']),
+        'createdDateFrom' => $trimNonEmpty((string) $_GET['since']),
+        'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
     ];
-    $parameters = array_filter($parameters);
 
     $organization = $api->get('organizations/' . $_GET['organization']);
-    $clients = $api->get('clients/', $parameters);
-    $payments = $api->get('payments/');
+    $invoices = $api->get('invoices/');
     
-    console_log($clients[0]);
-    console_log($payments);
+    console_log($invoices);
+    console_log($organization);
 
-    $clientsMap = [];
-    $cantidadClientes = 0;
-    foreach ($clients as $client) {
-        if (date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && date($client['registrationDate']) <= date($parameters['registrationDateTo'])) {
-            $cantidadClientes++;
-            if ($client['clientType'] == 1) {
-                $clientsMap[$client['id']] = [
-                    'id' => $client['id'],
-                    'firstName' => $client['firstName'],
-                    'lastName' => $client['lastName'],
-                    'registrationDate' => $client['registrationDate'],
-                    'clientType' => 'Residencial',
-                    'referral' => $client['referral'],
-                ];
-            } else if ($client['clientType'] == 2) {
-                $clientsMap[$client['id']] = [
-                    'id' => $client['id'],
-                    'firstName' => $client['companyName'],
-                    'lastName' => '',
-                    'registrationDate' => $client['registrationDate'],
-                    'clientType' => 'Empresarial',
-                    'referral' => $client['referral'],
+    $invoiceMap = [];
+    $cantidadFacturas = 0;
+    $cantidadImpuestos = 0;
+    $cantidadSinImpuestos = 0;
+    $cantidadTotal = 0;
+
+    foreach ($invoices as $invoice) {
+        if (date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
+        date($invoice['createdDate']) <= date($parameters['createdDateTo'])) {
+
+            if ($invoice['organizationName'] == $organization['name']) {
+                $cantidadFacturas++;
+                $cantidadSinImpuestos = $cantidadSinImpuestos + $invoice['totalUntaxed'];
+                $cantidadImpuestos = $cantidadImpuestos + $invoice['totalTaxAmount'];
+                $cantidadTotal = $cantidadTotal + $invoice['total'];
+                
+                $invoiceMap[$invoice['id']] = [
+                    'id' => $invoice['id'],
+                    'createdDate' => $invoice['createdDate'],
+                    'clientId' => $invoice['clientId'],
+                    'clientName' => $invoice['clientFirstName'] . ' ' . $invoice['clientLastName'],
+                    'companyName' => $invoice['clientCompanyName'],
+                    'total' => $invoice['total'],
+                    'totalTaxAmount' => $invoice['totalTaxAmount'],
+                    'totalUntaxed' => $invoice['totalUntaxed'],
                 ];
             }
         }
     }
 
     $result = [
-        'clients' => array_values($clientsMap),
-        'cantidadClientes' => $cantidadClientes,
-        'domain' => $_SERVER['HTTP_HOST'],
+        'invoices' => array_values($invoiceMap),
+        'cantidadFacturas' => $cantidadFacturas,
+        'cantidadSinImpuestos' => $cantidadSinImpuestos,
+        'cantidadImpuestos' => $cantidadImpuestos,
+        'cantidadTotal' => $cantidadTotal,
     ];
 
 }

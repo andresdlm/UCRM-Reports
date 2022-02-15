@@ -1,9 +1,9 @@
 {
   "version": "1",
   "information": {
-    "name": "client-report",
-    "displayName": "Reporte de clientes",
-    "description": "Muestra el reporte de clientes bajo el criterio de fecha de inscripcion y organizacion",
+    "name": "invoice-report",
+    "displayName": "Reporte de facturación",
+    "description": "Muestra el reporte de facturas bajo el criterio de fecha de creación y organización",
     "url": "https://github.com/andresdlm/UCRM-Reports",
     "version": "1.0.0",
     "ucrmVersionCompliancy": {
@@ -19,7 +19,7 @@
   "menu": [
     {
       "key": "Reports",
-      "label": "Reporte de clientes",
+      "label": "Reporte de facturación",
       "type": "admin",
       "target": "iframe"
     }

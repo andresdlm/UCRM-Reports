@@ -4,7 +4,7 @@
     "name": "payment-report",
     "displayName": "Reporte de pagos",
     "description": "Muestra el reporte de pagos bajo el criterio de fecha de registro y organizacion",
-    "url": "https://github.com/andresdlm/UCRM-Client-report",
+    "url": "https://github.com/andresdlm/UCRM-Reports",
     "version": "1.0.0",
     "ucrmVersionCompliancy": {
       "min": "2.14.0-beta4",

@@ -7,7 +7,7 @@
                     <th scope="col">Fecha de registro</th>
                     <th scope="col">Método de pago</th>
                     <th scope="col">Cliente</th>
-                    <th scope="col">Monto</th>
+                    <th scope="col">Monto $</th>
                 </tr>
             </thead>
             <tbody>
@@ -17,7 +17,7 @@
                         <td><?php echo htmlspecialchars(date_format(date_create($payment['createdDate']), 'd-m-Y'))?></td>
                         <td><?php echo htmlspecialchars($payment['methodId'])?></td>
                         <td><?php echo htmlspecialchars($payment['companyName'] . $payment['clientName'])?></td>
-                        <td><?php echo htmlspecialchars($payment['amount'])?>$</td>
+                        <td><?php echo htmlspecialchars($payment['amount'])?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -27,7 +27,7 @@
                     <th></th>
                     <th></th>
                     <th><?php echo htmlspecialchars($result['cantidadPagos'])?></th>
-                    <th><?php echo htmlspecialchars($result['cantidadRecibida'])?>$</th>
+                    <th><?php echo htmlspecialchars($result['cantidadRecibida'])?></th>
                 </tr>
             </tfoot>
         </table>
