@@ -49,53 +49,86 @@ if (
         return $value === '' ? null : $value;
     };
 
+    $organizationId = (int) $_GET['organization'];
+    $organizationName = "";
+
+    if($organizationId != 0) {
+        $organization = $api->get('organizations/' . $organizationId);
+        $organizationName = $organization['name'];
+    }
+
     $parameters = [
         'createdDateFrom' => $trimNonEmpty((string) $_GET['since']),
         'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
+        'organizationName' => $organizationName,
+        'status' => (int) $trimNonEmpty((string) $_GET['status']),
     ];
 
-    $organization = $api->get('organizations/' . $_GET['organization']);
     $invoices = $api->get('invoices/');
-    
-    console_log($invoices);
-    console_log($organization);
 
-    $invoiceMap = [];
-    $cantidadFacturas = 0;
-    $cantidadImpuestos = 0;
-    $cantidadSinImpuestos = 0;
-    $cantidadTotal = 0;
-
-    foreach ($invoices as $invoice) {
-        if (date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
-        date($invoice['createdDate']) <= date($parameters['createdDateTo'])) {
-
-            if ($invoice['organizationName'] == $organization['name']) {
-                $cantidadFacturas++;
-                $cantidadSinImpuestos = $cantidadSinImpuestos + $invoice['totalUntaxed'];
-                $cantidadImpuestos = $cantidadImpuestos + $invoice['totalTaxAmount'];
-                $cantidadTotal = $cantidadTotal + $invoice['total'];
-                
-                $invoiceMap[$invoice['id']] = [
-                    'id' => $invoice['id'],
-                    'createdDate' => $invoice['createdDate'],
-                    'clientId' => $invoice['clientId'],
-                    'clientName' => $invoice['clientFirstName'] . ' ' . $invoice['clientLastName'],
-                    'companyName' => $invoice['clientCompanyName'],
-                    'total' => $invoice['total'],
-                    'totalTaxAmount' => $invoice['totalTaxAmount'],
-                    'totalUntaxed' => $invoice['totalUntaxed'],
-                ];
-            }
+    if($organizationId != 0) {
+        if($parameters['status'] == 0) {
+            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
+                return $invoice['organizationName'] == $parameters['organizationName'] &&
+                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+            });
+        } else if($parameters['status'] == 1) {
+            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
+                return $invoice['organizationName'] == $parameters['organizationName'] &&
+                $invoice['amountToPay'] == 0 &&
+                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+            });
+        } else if($parameters['status'] == 2) {
+            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
+                return $invoice['organizationName'] == $parameters['organizationName'] &&
+                $invoice['amountToPay'] != 0 &&
+                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+            });
+        } 
+    } else {
+        if($parameters['status'] == 0) {
+            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
+                return date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+            });
+        } else if($parameters['status'] == 1) {
+            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
+                return $invoice['amountToPay'] == 0 &&
+                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+            });
+        } else if($parameters['status'] == 2) {
+            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
+                return $invoice['amountToPay'] != 0 &&
+                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+            });
         }
     }
 
+    $cantidadImpuestos = 0;
+    $cantidadSinImpuestos = 0;
+    $cantidadTotal = 0;
+    $cantidadTotalSinPagar = 0;
+
+    foreach ($invoicesFiltered as $invoice) {
+        $cantidadSinImpuestos = $cantidadSinImpuestos + $invoice['totalUntaxed'];
+        $cantidadImpuestos = $cantidadImpuestos + $invoice['totalTaxAmount'];
+        $cantidadTotal = $cantidadTotal + $invoice['total'];
+        $cantidadTotalSinPagar = $cantidadTotalSinPagar + $invoice['amountToPay'];
+    }
+
     $result = [
-        'invoices' => array_values($invoiceMap),
-        'cantidadFacturas' => $cantidadFacturas,
+        'invoices' => array_values($invoicesFiltered),
+        'cantidadFacturas' => count($invoicesFiltered),
         'cantidadSinImpuestos' => $cantidadSinImpuestos,
         'cantidadImpuestos' => $cantidadImpuestos,
         'cantidadTotal' => $cantidadTotal,
+        'cantidadTotalSinPagar' => $cantidadTotalSinPagar,
+        'domain' => $_SERVER['HTTP_HOST'],
     ];
 
 }

@@ -35,6 +35,7 @@
                                             );
                                         }
                                         ?>
+                                        <option value="0">Todas</option>
                                     </select>
                                 </div>
 
@@ -46,6 +47,15 @@
                                 <div class="col-3">
                                     <label class="mb-0" for="frm-until"><small>Hasta:</small></label>
                                     <input type="date" name="until" id="frm-until" placeholder="YYYY-MM-DD" class="form-control form-control-sm" value="<?php echo htmlspecialchars($result['until'] ?? '', ENT_QUOTES); ?>">
+                                </div>
+
+                                <div class="col-3">
+                                    <label class="mb-0" for="frm-status"><small>Estado:</small></label>
+                                    <select name="status" id="frm-status" class="form-control form-control-sm">
+                                        <option value='0'>Todas</option>
+                                        <option value='1'>Pagadas</option>
+                                        <option value='2'>Sin pagar</option>
+                                    </select>
                                 </div>
 
                                 <div class="col-auto ml-auto">
