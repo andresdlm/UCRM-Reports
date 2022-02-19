@@ -50,49 +50,44 @@ if (
     };
 
     $parameters = [
-        'organizationId' => $trimNonEmpty((string) $_GET['organization']),
+        'organizationId' => (int) $trimNonEmpty((string) $_GET['organization']),
+        'clientType' => (int) $trimNonEmpty((string) $_GET['clientType']),
         'registrationDateFrom' => $trimNonEmpty((string) $_GET['since']),
         'registrationDateTo' => $trimNonEmpty((string) $_GET['until']),
     ];
-    $parameters = array_filter($parameters);
 
-    $organization = $api->get('organizations/' . $_GET['organization']);
-    $clients = $api->get('clients/', $parameters);
-    $payments = $api->get('payments/');
-    
-    console_log($clients[0]);
-    console_log($payments);
+    $clients = $api->get('clients/');
 
-    $clientsMap = [];
-    $cantidadClientes = 0;
-    foreach ($clients as $client) {
-        if (date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && date($client['registrationDate']) <= date($parameters['registrationDateTo'])) {
-            $cantidadClientes++;
-            if ($client['clientType'] == 1) {
-                $clientsMap[$client['id']] = [
-                    'id' => $client['id'],
-                    'firstName' => $client['firstName'],
-                    'lastName' => $client['lastName'],
-                    'registrationDate' => $client['registrationDate'],
-                    'clientType' => 'Residencial',
-                    'referral' => $client['referral'],
-                ];
-            } else if ($client['clientType'] == 2) {
-                $clientsMap[$client['id']] = [
-                    'id' => $client['id'],
-                    'firstName' => $client['companyName'],
-                    'lastName' => '',
-                    'registrationDate' => $client['registrationDate'],
-                    'clientType' => 'Empresarial',
-                    'referral' => $client['referral'],
-                ];
+    $clientsFiltered = array_filter($clients, function($client) use ($parameters) {
+        if($parameters['organizationId'] == 0) {
+            if($parameters['clientType'] == 0) {
+                return date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
+                date($client['registrationDate']) <= date($parameters['registrationDateTo']);
+            } else {
+                return $client['clientType'] == $parameters['clientType'] && 
+                date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
+                date($client['registrationDate']) <= date($parameters['registrationDateTo']);
             }
         }
-    }
+        else {
+            if($parameters['clientType'] == 0) {
+                return $client['organizationId'] == $parameters['organizationId'] && 
+                date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
+                date($client['registrationDate']) <= date($parameters['registrationDateTo']);
+            } else {
+                return $client['organizationId'] == $parameters['organizationId'] && 
+                $client['clientType'] == $parameters['clientType'] &&
+                date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
+                date($client['registrationDate']) <= date($parameters['registrationDateTo']);
+            }
+        }
+    });
+
+    console_log($clientsFiltered);
 
     $result = [
-        'clients' => array_values($clientsMap),
-        'cantidadClientes' => $cantidadClientes,
+        'clients' => array_values($clientsFiltered),
+        'clientsCount' => count($clientsFiltered),
         'domain' => $_SERVER['HTTP_HOST'],
     ];
 

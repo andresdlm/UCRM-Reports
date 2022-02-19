@@ -14,8 +14,8 @@
                 <?php foreach ($result['clients'] as $client) { ?>
                     <tr>
                         <td><a href="https://<?php echo($result['domain']);?>/crm/client/<?php echo($client['id']);?>"><?php echo htmlspecialchars($client['id']);?></a></td>
-                        <td><?php echo htmlspecialchars($client['firstName'] . ' ' . $client['lastName']); ?></td>
-                        <td><?php echo htmlspecialchars($client['clientType'])?></td>
+                        <td><?php echo htmlspecialchars($client['companyName'] . $client['firstName'] . ' ' . $client['lastName']); ?></td>
+                        <td><?php if($client['clientType'] == 1) {echo htmlspecialchars("Residencial");} else {echo htmlspecialchars("Empresarial");}?></td>
                         <td><?php echo htmlspecialchars(date_format(date_create($client['registrationDate']), 'd-m-Y'))?></td>
                         <td><?php echo htmlspecialchars($client['referral'])?></td>
                     </tr>
@@ -24,7 +24,7 @@
             <tfoot>
                 <tr>
                     <th>Total de clientes</th>
-                    <th><?php echo htmlspecialchars($result['cantidadClientes'])?></th>
+                    <th><?php echo htmlspecialchars($result['clientsCount'])?></th>
                 </tr>
             </tfoot>
         </table>
