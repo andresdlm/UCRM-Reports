@@ -50,46 +50,42 @@ if (
     };
 
     $parameters = [
+        'organizationId' => (int) $trimNonEmpty((string) $_GET['organization']),
         'createdDateFrom' => $trimNonEmpty((string) $_GET['since']),
         'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
     ];
 
-    $organization = $api->get('organizations/' . $_GET['organization']);
     $clients = $api->get('clients/');
     $payments = $api->get('payments/');
     
     console_log($clients);
     console_log($payments);
 
-    $paymentsMap = [];
-    $cantidadPagos = 0;
-    $cantidadRecibida = 0;
-    foreach ($payments as $payment) {
-        if (date($payment['createdDate']) >= date($parameters['createdDateFrom']) && 
-        date($payment['createdDate']) <= date($parameters['createdDateTo'])) {
-            $client = $api->get('clients/' . $payment['clientId']);
-
-            if ($client['organizationId'] == $organization['id']) {
-                $cantidadPagos++;
-                $cantidadRecibida = $cantidadRecibida + $payment['amount'];
-                
-                $paymentsMap[$payment['id']] = [
-                    'id' => $payment['id'],
-                    'createdDate' => $payment['createdDate'],
-                    'clientId' => $payment['clientId'],
-                    'clientName' => $client['firstName'] . ' ' . $client['lastName'],
-                    'companyName' => $client['companyName'],
-                    'amount' => $payment['amount'],
-                    'methodId' => $payment['methodId'],
-                ];
+    if($parameters['organizationId'] != 0) {
+        $paymentFiltered = array_filter($payments, function($payment) use ($parameters, $api) {
+            if(date($payment['createdDate']) >= date($parameters['createdDateFrom']) && date($payment['createdDate']) <= date($parameters['createdDateTo'])) {
+                $client = $api->get('clients/' . $payment['clientId']);
+                return $client['organizationId'] == $parameters['organizationId'];
             }
-        }
+        });
+    } else {
+        $paymentFiltered = array_filter($payments, function($payment) use ($parameters) {
+            return date($payment['createdDate']) >= date($parameters['createdDateFrom']) && 
+            date($payment['createdDate']) <= date($parameters['createdDateTo']);
+        });
+    }
+
+    $paymentsMap = [];
+    $cantidadRecibida = 0;
+    foreach ($paymentFiltered as $payment) {
+        $cantidadRecibida = $cantidadRecibida + $payment['amount'];
     }
 
     $result = [
-        'payments' => array_values($paymentsMap),
-        'cantidadPagos' => $cantidadPagos,
+        'payments' => array_values($paymentFiltered),
+        'cantidadPagos' => count($paymentFiltered),
         'cantidadRecibida' => $cantidadRecibida,
+        'domain' => $_SERVER['HTTP_HOST'],
     ];
 
 }

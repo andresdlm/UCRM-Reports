@@ -35,6 +35,7 @@
                                             );
                                         }
                                         ?>
+                                        <option value="0">Todas</option>
                                     </select>
                                 </div>
 
