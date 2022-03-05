@@ -40,6 +40,22 @@
                                 </div>
 
                                 <div class="col-3">
+                                    <label class="mb-0" for="frm-payment-method"><small>Metodo de Pago:</small></label>
+                                    <select name="payment-method" id="frm-payment-method" class="form-control form-control-sm">
+                                        <option value="0">Todas</option>
+                                        <?php
+                                        foreach ($paymentMethods as $paymentMethod) {
+                                            printf(
+                                                '<option value="%s">%s</option>',
+                                                $paymentMethod['id'],
+                                                htmlspecialchars($paymentMethod['name'], ENT_QUOTES)
+                                            );
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <div class="col-3">
                                     <label class="mb-0" for="frm-since"><small>Desde:</small></label>
                                     <input type="date" name="since" id="frm-since" placeholder="YYYY-MM-DD" class="form-control form-control-sm" value="<?php echo htmlspecialchars($result['since'] ?? '', ENT_QUOTES); ?>">
                                 </div>
