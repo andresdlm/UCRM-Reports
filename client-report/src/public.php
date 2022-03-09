@@ -62,23 +62,27 @@ if (
         if($parameters['organizationId'] == 0) {
             if($parameters['clientType'] == 0) {
                 return date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
-                date($client['registrationDate']) <= date($parameters['registrationDateTo']);
+                date($client['registrationDate']) <= date($parameters['registrationDateTo']) &&
+                $client['isLead'] == FALSE;
             } else {
                 return $client['clientType'] == $parameters['clientType'] && 
                 date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
-                date($client['registrationDate']) <= date($parameters['registrationDateTo']);
+                date($client['registrationDate']) <= date($parameters['registrationDateTo']) &&
+                $client['isLead'] == FALSE;
             }
         }
         else {
             if($parameters['clientType'] == 0) {
                 return $client['organizationId'] == $parameters['organizationId'] && 
                 date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
-                date($client['registrationDate']) <= date($parameters['registrationDateTo']);
+                date($client['registrationDate']) <= date($parameters['registrationDateTo']) &&
+                $client['isLead'] == FALSE;
             } else {
                 return $client['organizationId'] == $parameters['organizationId'] && 
                 $client['clientType'] == $parameters['clientType'] &&
                 date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
-                date($client['registrationDate']) <= date($parameters['registrationDateTo']);
+                date($client['registrationDate']) <= date($parameters['registrationDateTo']) &&
+                $client['isLead'] == FALSE;
             }
         }
     });

@@ -101,7 +101,6 @@ if (
     $cantidadRecibida = 0;
     foreach ($paymentFiltered as $payment) {
         $cantidadRecibida = $cantidadRecibida + $payment['amount'];
-        $payment['methodId'] = 'hola';
     }
 
     $result = [
