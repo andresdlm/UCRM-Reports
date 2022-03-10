@@ -62,51 +62,71 @@ if (
         'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
         'organizationName' => $organizationName,
         'status' => (int) $trimNonEmpty((string) $_GET['status']),
+        'clientType' => (int) $trimNonEmpty((string) $_GET['client-type']),
     ];
 
     $invoices = $api->get('invoices/');
+    console_log($invoices);
 
     if($organizationId != 0) {
+        // Todas las organizaciones
         if($parameters['status'] == 0) {
+            // Facturas pagadas y sin pagar
             $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
                 return $invoice['organizationName'] == $parameters['organizationName'] &&
-                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
             });
         } else if($parameters['status'] == 1) {
+            // Facturas pagadas
             $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
                 return $invoice['organizationName'] == $parameters['organizationName'] &&
                 $invoice['amountToPay'] == 0 &&
-                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
             });
         } else if($parameters['status'] == 2) {
+            // Facturas sin pagar 
             $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
                 return $invoice['organizationName'] == $parameters['organizationName'] &&
                 $invoice['amountToPay'] != 0 &&
-                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
             });
         } 
     } else {
+        // Filtrar por organización
         if($parameters['status'] == 0) {
+            // Facturas pagadas y sin pagar
             $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
-                return date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+                return date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
             });
         } else if($parameters['status'] == 1) {
+            // Facturas pagadas
             $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
                 return $invoice['amountToPay'] == 0 &&
-                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
             });
         } else if($parameters['status'] == 2) {
+            // Facturas sin pagar
             $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
                 return $invoice['amountToPay'] != 0 &&
-                date($invoice['createdDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['createdDate']) <= date($parameters['createdDateTo']);
+                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
             });
         }
+    }
+
+    if($parameters['clientType'] == 1) {
+        $invoicesFiltered = array_filter($invoicesFiltered, function($invoice) {
+            return $invoice['clientCompanyName'] == NULL;
+        });
+    } else if ($parameters['clientType'] == 2) {
+        $invoicesFiltered = array_filter($invoicesFiltered, function($invoice) {
+            return $invoice['clientCompanyName'] != NULL;
+        });
     }
 
     $cantidadImpuestos = 0;

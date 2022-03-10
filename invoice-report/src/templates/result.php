@@ -4,7 +4,7 @@
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">ID de factura</th>
-                    <th scope="col">Fecha de creación</th>
+                    <th scope="col">Fecha de vencimiento</th>
                     <th scope="col">ID Cliente</th>
                     <th scope="col">Cliente</th>
                     <th scope="col">Sub Total $</th>

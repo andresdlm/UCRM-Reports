@@ -50,6 +50,15 @@
                                 </div>
 
                                 <div class="col-3">
+                                    <label class="mb-0" for="frm-client-type"><small>Tipo de cliente:</small></label>
+                                    <select name="client-type" id="frm-client-type" class="form-control form-control-sm">
+                                        <option value='0'>Todos</option>
+                                        <option value='1'>Residenciales</option>
+                                        <option value='2'>Empresariales</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-3">
                                     <label class="mb-0" for="frm-status"><small>Estado:</small></label>
                                     <select name="status" id="frm-status" class="form-control form-control-sm">
                                         <option value='0'>Todas</option>
