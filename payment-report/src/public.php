@@ -56,20 +56,23 @@ if (
         'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
     ];
 
-    $clients = $api->get('clients/');
+    $clientsId = [];
+    if($parameters['organizationId'] != 0) {
+        $clients = $api->get('clients/', ['organizationId' => $_GET['organization']]);
+        foreach($clients as $client) {
+            array_push($clientsId, $client['id']);
+        }
+    }
     $payments = $api->get('payments/');
-    $paymentMethods = $api->get('payment-methods/');
     
-    console_log($clients);
     console_log($payments);
-    console_log($paymentMethods);
 
     if($parameters['paymentMethodId'] == '0') {
         if($parameters['organizationId'] != 0) {
-            $paymentFiltered = array_filter($payments, function($payment) use ($parameters, $api) {
-                if(date($payment['createdDate']) >= date($parameters['createdDateFrom']) && date($payment['createdDate']) <= date($parameters['createdDateTo'])) {
-                    $client = $api->get('clients/' . $payment['clientId']);
-                    return $client['organizationId'] == $parameters['organizationId'];
+            $paymentFiltered = array_filter($payments, function($payment) use ($parameters, $clientsId) {
+                if(date($payment['createdDate']) >= date($parameters['createdDateFrom']) && 
+                date($payment['createdDate']) <= date($parameters['createdDateTo'])) {
+                    return in_array($payment['clientId'], $clientsId);
                 }
             });
         } else {
@@ -80,12 +83,11 @@ if (
         }
     } else {
         if($parameters['organizationId'] != 0) {
-            $paymentFiltered = array_filter($payments, function($payment) use ($parameters, $api) {
+            $paymentFiltered = array_filter($payments, function($payment) use ($parameters, $clientsId) {
                 if(date($payment['createdDate']) >= date($parameters['createdDateFrom']) && 
                 date($payment['createdDate']) <= date($parameters['createdDateTo']) &&
                 $payment['methodId'] == $parameters['paymentMethodId']) {
-                    $client = $api->get('clients/' . $payment['clientId']);
-                    return $client['organizationId'] == $parameters['organizationId'];
+                    return in_array($payment['clientId'], $clientsId);
                 }
             });
         } else {
