@@ -50,13 +50,14 @@ if (
     };
 
     $parameters = [
+        'organizationId' => (int) $trimNonEmpty((string) $_GET['organization']),
         'createdDateFrom' => $trimNonEmpty((string) $_GET['since']),
         'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
         'status' => (int) $trimNonEmpty((string) $_GET['status']),
         'clientType' => (int) $trimNonEmpty((string) $_GET['client-type']),
     ];
 
-    if($organizationId == 0) {
+    if($parameters['organizationId'] == 0) {
         $invoices = $api->get('invoices/');
     } else {
         $invoices = $api->get('invoices/', ['organizationId' => $_GET['organization']]);
