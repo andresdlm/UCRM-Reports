@@ -56,42 +56,40 @@ if (
         'registrationDateTo' => $trimNonEmpty((string) $_GET['until']),
     ];
 
-    $clients = $api->get('clients/');
-
-    $clientsFiltered = array_filter($clients, function($client) use ($parameters) {
-        if($parameters['organizationId'] == 0) {
-            if($parameters['clientType'] == 0) {
-                return date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
-                date($client['registrationDate']) <= date($parameters['registrationDateTo']) &&
-                $client['isLead'] == FALSE;
-            } else {
-                return $client['clientType'] == $parameters['clientType'] && 
-                date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
-                date($client['registrationDate']) <= date($parameters['registrationDateTo']) &&
-                $client['isLead'] == FALSE;
-            }
+    if($parameters['organizationId'] == 0) {
+        $clients = $api->get('clients/');
+        $services = $api->get('clients/services');
+    } else {
+        $clients = $api->get('clients/', ['organizationId' => $_GET['organization']]);
+        $services = $api->get('clients/services', ['organizationId' => $_GET['organization']]);
+    }
+    
+    console_log($clients);
+    console_log($services);
+    
+    $services = array_filter($services, function($service) use ($parameters) {
+        if($service['activeFrom'] != NULL) {
+            return date($service['activeFrom']) >= date($parameters['registrationDateFrom']) &&
+            date($service['activeFrom']) <= date($parameters['registrationDateTo']);
         }
-        else {
-            if($parameters['clientType'] == 0) {
-                return $client['organizationId'] == $parameters['organizationId'] && 
-                date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
-                date($client['registrationDate']) <= date($parameters['registrationDateTo']) &&
-                $client['isLead'] == FALSE;
-            } else {
-                return $client['organizationId'] == $parameters['organizationId'] && 
-                $client['clientType'] == $parameters['clientType'] &&
-                date($client['registrationDate']) >= date($parameters['registrationDateFrom']) && 
-                date($client['registrationDate']) <= date($parameters['registrationDateTo']) &&
-                $client['isLead'] == FALSE;
-            }
+    });
+    
+    $clientsId = [];
+    foreach ($services as $service) {
+        array_push($clientsId, $service['clientId']);
+    }
+
+    $clients = array_filter($clients, function($client) use ($parameters, $clientsId) {
+        if($parameters['clientType'] == 0) {
+            return in_array($client['id'], $clientsId);
+        } else {
+            return $client['clientType'] == $parameters['clientType'] && in_array($client['id'], $clientsId);
         }
     });
 
-    console_log($clientsFiltered);
-
     $result = [
-        'clients' => array_values($clientsFiltered),
-        'clientsCount' => count($clientsFiltered),
+        'clients' => array_values($clients),
+        'clientsCount' => count($clients),
         'domain' => $_SERVER['HTTP_HOST'],
     ];
 
