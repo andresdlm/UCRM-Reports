@@ -49,82 +49,49 @@ if (
         return $value === '' ? null : $value;
     };
 
-    $organizationId = (int) $_GET['organization'];
-    $organizationName = "";
-
-    if($organizationId != 0) {
-        $organization = $api->get('organizations/' . $organizationId);
-        $organizationName = $organization['name'];
-    }
-
     $parameters = [
         'createdDateFrom' => $trimNonEmpty((string) $_GET['since']),
         'createdDateTo' => $trimNonEmpty((string) $_GET['until']),
-        'organizationName' => $organizationName,
         'status' => (int) $trimNonEmpty((string) $_GET['status']),
         'clientType' => (int) $trimNonEmpty((string) $_GET['client-type']),
     ];
 
-    $invoices = $api->get('invoices/');
+    if($organizationId == 0) {
+        $invoices = $api->get('invoices/');
+    } else {
+        $invoices = $api->get('invoices/', ['organizationId' => $_GET['organization']]);
+    }
+    
     console_log($invoices);
 
-    if($organizationId != 0) {
-        // Todas las organizaciones
-        if($parameters['status'] == 0) {
-            // Facturas pagadas y sin pagar
-            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
-                return $invoice['organizationName'] == $parameters['organizationName'] &&
-                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
-            });
-        } else if($parameters['status'] == 1) {
-            // Facturas pagadas
-            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
-                return $invoice['organizationName'] == $parameters['organizationName'] &&
-                $invoice['amountToPay'] == 0 &&
-                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
-            });
-        } else if($parameters['status'] == 2) {
-            // Facturas sin pagar 
-            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
-                return $invoice['organizationName'] == $parameters['organizationName'] &&
-                $invoice['amountToPay'] != 0 &&
-                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
-            });
-        } 
-    } else {
-        // Filtrar por organización
-        if($parameters['status'] == 0) {
-            // Facturas pagadas y sin pagar
-            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
-                return date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
-            });
-        } else if($parameters['status'] == 1) {
-            // Facturas pagadas
-            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
-                return $invoice['amountToPay'] == 0 &&
-                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
-            });
-        } else if($parameters['status'] == 2) {
-            // Facturas sin pagar
-            $invoicesFiltered = array_filter($invoices, function($invoice) use ($parameters) {
-                return $invoice['amountToPay'] != 0 &&
-                date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
-                date($invoice['dueDate']) <= date($parameters['createdDateTo']);
-            });
-        }
+    if($parameters['status'] == 0) {
+        // Facturas pagadas y sin pagar
+        $invoices = array_filter($invoices, function($invoice) use ($parameters) {
+            return date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+            date($invoice['dueDate']) <= date($parameters['createdDateTo']);
+        });
+    } else if($parameters['status'] == 1) {
+        // Facturas pagadas
+        $invoices = array_filter($invoices, function($invoice) use ($parameters) {
+            return $invoice['amountToPay'] == 0 &&
+            date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+            date($invoice['dueDate']) <= date($parameters['createdDateTo']);
+        });
+    } else if($parameters['status'] == 2) {
+        // Facturas sin pagar
+        $invoices = array_filter($invoices, function($invoice) use ($parameters) {
+            return $invoice['amountToPay'] != 0 &&
+            date($invoice['dueDate']) >= date($parameters['createdDateFrom']) && 
+            date($invoice['dueDate']) <= date($parameters['createdDateTo']);
+        });
     }
 
     if($parameters['clientType'] == 1) {
-        $invoicesFiltered = array_filter($invoicesFiltered, function($invoice) {
+        $invoices = array_filter($invoices, function($invoice) {
             return $invoice['clientCompanyName'] == NULL;
         });
     } else if ($parameters['clientType'] == 2) {
-        $invoicesFiltered = array_filter($invoicesFiltered, function($invoice) {
+        $invoices = array_filter($invoices, function($invoice) {
             return $invoice['clientCompanyName'] != NULL;
         });
     }
@@ -134,7 +101,7 @@ if (
     $cantidadTotal = 0;
     $cantidadTotalSinPagar = 0;
 
-    foreach ($invoicesFiltered as $invoice) {
+    foreach ($invoices as $invoice) {
         $cantidadSinImpuestos = $cantidadSinImpuestos + $invoice['totalUntaxed'];
         $cantidadImpuestos = $cantidadImpuestos + $invoice['totalTaxAmount'];
         $cantidadTotal = $cantidadTotal + $invoice['total'];
@@ -142,8 +109,8 @@ if (
     }
 
     $result = [
-        'invoices' => array_values($invoicesFiltered),
-        'cantidadFacturas' => count($invoicesFiltered),
+        'invoices' => array_values($invoices),
+        'cantidadFacturas' => count($invoices),
         'cantidadSinImpuestos' => $cantidadSinImpuestos,
         'cantidadImpuestos' => $cantidadImpuestos,
         'cantidadTotal' => $cantidadTotal,

@@ -17,7 +17,7 @@
                 <?php foreach ($result['invoices'] as $invoice) { ?>
                     <tr>
                         <td><a href="https://<?php echo($result['domain']);?>/crm/billing/invoice/<?php echo($invoice['id']);?>"><?php echo htmlspecialchars($invoice['id'])?></a></td>
-                        <td><?php echo htmlspecialchars(date_format(date_create($invoice['createdDate']), 'd-m-Y'))?></td>
+                        <td><?php echo htmlspecialchars(date_format(date_create($invoice['dueDate']), 'd-m-Y'))?></td>
                         <td><a href="https://<?php echo($result['domain']);?>/crm/client/<?php echo($invoice['clientId']);?>"><?php echo htmlspecialchars($invoice['clientId']);?></a></td>
                         <td><?php echo htmlspecialchars($invoice['clientCompanyName'] . $invoice['clientFirstName'] . ' ' . $invoice['clientLastName'])?></td>
                         <td><?php echo htmlspecialchars($invoice['totalUntaxed'])?></td>
