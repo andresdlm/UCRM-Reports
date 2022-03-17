@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "information": {
+    "name": "account-report",
+    "displayName": "Reporte de cuentas",
+    "description": "Muestra el reporte de cuentas",
+    "url": "https://github.com/andresdlm/UCRM-Reports",
+    "version": "1.0.0",
+    "ucrmVersionCompliancy": {
+      "min": "2.14.0-beta4",
+      "max": null
+    },
+    "unmsVersionCompliancy": {
+      "min": "1.0.0-dev.1",
+      "max": null
+    },
+    "author": "Andres Linarez"
+  },
+  "menu": [
+    {
+      "key": "Reports",
+      "label": "Reporte de cuentas",
+      "type": "admin",
+      "target": "iframe"
+    }
+  ]
+}
