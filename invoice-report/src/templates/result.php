@@ -20,10 +20,10 @@
                         <td><?php echo htmlspecialchars(date_format(date_create($invoice['dueDate']), 'd-m-Y'))?></td>
                         <td><a href="https://<?php echo($result['domain']);?>/crm/client/<?php echo($invoice['clientId']);?>"><?php echo htmlspecialchars($invoice['clientId']);?></a></td>
                         <td><?php echo htmlspecialchars($invoice['clientCompanyName'] . $invoice['clientFirstName'] . ' ' . $invoice['clientLastName'])?></td>
-                        <td><?php echo htmlspecialchars($invoice['totalUntaxed'])?></td>
-                        <td><?php echo htmlspecialchars($invoice['totalTaxAmount'])?></td>
-                        <td><?php echo htmlspecialchars($invoice['total'])?></td>
-                        <td><?php echo htmlspecialchars($invoice['amountToPay'])?></td>
+                        <td align='right'><?php echo htmlspecialchars($invoice['totalUntaxed'])?></td>
+                        <td align='right'><?php echo htmlspecialchars($invoice['totalTaxAmount'])?></td>
+                        <td align='right'><?php echo htmlspecialchars($invoice['total'])?></td>
+                        <td align='right'><?php echo htmlspecialchars($invoice['amountToPay'])?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -33,10 +33,10 @@
                     <th></th>
                     <th></th>
                     <th><?php echo htmlspecialchars($result['cantidadFacturas'])?></th>
-                    <th><?php echo htmlspecialchars($result['cantidadSinImpuestos'])?></th>
-                    <th><?php echo htmlspecialchars($result['cantidadImpuestos'])?></th>
-                    <th><?php echo htmlspecialchars($result['cantidadTotal'])?></th>
-                    <th><?php echo htmlspecialchars($result['cantidadTotalSinPagar'])?></th>
+                    <th align='right'><?php echo htmlspecialchars($result['cantidadSinImpuestos'])?></th>
+                    <th align='right'><?php echo htmlspecialchars($result['cantidadImpuestos'])?></th>
+                    <th align='right'><?php echo htmlspecialchars($result['cantidadTotal'])?></th>
+                    <th align='right'><?php echo htmlspecialchars($result['cantidadTotalSinPagar'])?></th>
                 </tr>
             </tfoot>
         </table>

@@ -2,8 +2,8 @@
   "version": "1",
   "information": {
     "name": "conatel-report",
-    "displayName": "Reporte de CONATEL",
-    "description": "Muestra el reporte de cuantos servicios activos hay por plan de servicio. Este reporte es exigido en Venezuela por el organismo regulador de telecomunicaciones CONATEL.",
+    "displayName": "Reporte de servicios",
+    "description": "Muestra el reporte de cuantos servicios activos hay por plan de servicio.",
     "url": "https://github.com/andresdlm/UCRM-Reports",
     "version": "1.0.0",
     "ucrmVersionCompliancy": {
@@ -19,7 +19,7 @@
   "menu": [
     {
       "key": "Reports",
-      "label": "Reporte de CONATEL",
+      "label": "Reporte de servicios",
       "type": "admin",
       "target": "iframe"
     }

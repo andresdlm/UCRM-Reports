@@ -2,8 +2,8 @@
   "version": "1",
   "information": {
     "name": "account-report",
-    "displayName": "Reporte de cuentas",
-    "description": "Muestra el reporte de cuentas",
+    "displayName": "Resumen de Cobranzas",
+    "description": "Muestra el resumen de cobranzas",
     "url": "https://github.com/andresdlm/UCRM-Reports",
     "version": "1.0.0",
     "ucrmVersionCompliancy": {
@@ -19,7 +19,7 @@
   "menu": [
     {
       "key": "Reports",
-      "label": "Reporte de cuentas",
+      "label": "Resumen de Cobranzas",
       "type": "admin",
       "target": "iframe"
     }

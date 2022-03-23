@@ -67,29 +67,74 @@ if (
     console_log($clients);
     console_log($services);
     
-    $services = array_filter($services, function($service) use ($parameters) {
-        if($service['activeFrom'] != NULL) {
-            return date($service['activeFrom']) >= date($parameters['registrationDateFrom']) &&
-            date($service['activeFrom']) <= date($parameters['registrationDateTo']);
+    $clientsDict = [];
+    foreach($services as $service) {
+        if($service['activeFrom'] != NULL){
+            if(date($service['activeFrom']) >= date($parameters['registrationDateFrom']) &&
+            date($service['activeFrom']) <= date($parameters['registrationDateTo'])){
+                $clientsDict[$service['clientId']] = [
+                    'id' => $service['clientId'],
+                    'servicePlanName' => $service['servicePlanName'],
+                    'servicePlanPrice' => $service['servicePlanPrice'],
+                    'activeFrom' => $service['activeFrom'],
+                    'totalPrice' => $service['totalPrice'],
+                ];
+            }
         }
-    });
+    }
     
     $clientsId = [];
-    foreach ($services as $service) {
-        array_push($clientsId, $service['clientId']);
+    foreach ($clientsDict as $clientDict) {
+        array_push($clientsId, $clientDict['id']);
     }
 
-    $clients = array_filter($clients, function($client) use ($parameters, $clientsId) {
-        if($parameters['clientType'] == 0) {
-            return in_array($client['id'], $clientsId);
-        } else {
-            return $client['clientType'] == $parameters['clientType'] && in_array($client['id'], $clientsId);
+    $plansTotalPrice = 0;
+    if($parameters['clientType'] == 0) {
+        foreach($clients as $client){
+            if(in_array($client['id'], $clientsId)){
+                $clientsDict[$client['id']] = [
+                    'id' => $client['id'],
+                    'firstName' => $client['firstName'],
+                    'lastName' => $client['lastName'],
+                    'companyName' => $client['companyName'],
+                    'organizationName' => $client['organizationName'],
+                    'clientType' => $client['clientType'],
+                    'referral' => $client['referral'],
+                    'servicePlanName' => $clientsDict[$client['id']]['servicePlanName'],
+                    'servicePlanPrice' => $clientsDict[$client['id']]['servicePlanPrice'],
+                    'activeFrom' => $clientsDict[$client['id']]['activeFrom'],
+                    'totalPrice' => $clientsDict[$client['id']]['totalPrice'],
+                ];
+                $plansTotalPrice = $plansTotalPrice + $clientsDict[$client['id']]['servicePlanPrice'];
+            }
         }
-    });
+    } else {
+        foreach($clients as $client){
+            if($client['clientType'] == $parameters['clientType'] && in_array($client['id'], $clientsId)){
+                $clientsDict[$client['id']] = [
+                    'id' => $client['id'],
+                    'firstName' => $client['firstName'],
+                    'lastName' => $client['lastName'],
+                    'companyName' => $client['companyName'],
+                    'organizationName' => $client['organizationName'],
+                    'clientType' => $client['clientType'],
+                    'referral' => $client['referral'],
+                    'servicePlanName' => $clientsDict[$client['id']]['servicePlanName'],
+                    'servicePlanPrice' => $clientsDict[$client['id']]['servicePlanPrice'],
+                    'activeFrom' => $clientsDict[$client['id']]['activeFrom'],
+                    'totalPrice' => $clientsDict[$client['id']]['totalPrice'],
+                ];
+                $plansTotalPrice = $plansTotalPrice + $clientsDict[$client['id']]['servicePlanPrice'];
+            }
+        }
+    }
+
+    console_log($clientsDict);
 
     $result = [
-        'clients' => array_values($clients),
-        'clientsCount' => count($clients),
+        'clients' => array_values($clientsDict),
+        'clientsCount' => count($clientsDict),
+        'plansTotalPrice' => $plansTotalPrice,
         'domain' => $_SERVER['HTTP_HOST'],
     ];
 

@@ -112,10 +112,10 @@ if (
     $result = [
         'invoices' => array_values($invoices),
         'cantidadFacturas' => count($invoices),
-        'cantidadSinImpuestos' => $cantidadSinImpuestos,
-        'cantidadImpuestos' => $cantidadImpuestos,
-        'cantidadTotal' => $cantidadTotal,
-        'cantidadTotalSinPagar' => $cantidadTotalSinPagar,
+        'cantidadSinImpuestos' => round($cantidadSinImpuestos, 2),
+        'cantidadImpuestos' => round($cantidadImpuestos, 2),
+        'cantidadTotal' => round($cantidadTotal, 2),
+        'cantidadTotalSinPagar' => round($cantidadTotalSinPagar, 2),
         'domain' => $_SERVER['HTTP_HOST'],
     ];
 

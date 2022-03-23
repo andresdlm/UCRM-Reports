@@ -85,6 +85,7 @@ if (
 
     foreach($services as $service) {
         if($service['activeFrom'] != NULL && date($service['activeFrom']) <= date($parameters['registrationDateTo'])) {
+            
             if($service['servicePlanType'] == 'Internet') {
                 $internetPlans[$service['servicePlanId']]['countServices'] = $internetPlans[$service['servicePlanId']]['countServices'] + 1;
                 $countInternetServices = $countInternetServices + 1;

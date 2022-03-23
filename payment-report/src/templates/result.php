@@ -15,7 +15,7 @@
                         <td><a href="https://<?php echo($result['domain']);?>/crm/billing/payments/<?php echo($payment['id']);?>"><?php echo htmlspecialchars($payment['id']);?></a></td>
                         <td><?php echo htmlspecialchars(date_format(date_create($payment['createdDate']), 'd-m-Y'))?></td>
                         <td><a href="https://<?php echo($result['domain']);?>/crm/client/<?php echo($payment['clientId']);?>"><?php echo htmlspecialchars($payment['clientId']);?></a></td>
-                        <td><?php echo htmlspecialchars($payment['amount'])?></td>
+                        <td align='right'><?php echo htmlspecialchars($payment['amount'])?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -24,7 +24,7 @@
                     <th>Totales</th>
                     <th></th>
                     <th><?php echo htmlspecialchars($result['cantidadPagos'])?></th>
-                    <th><?php echo htmlspecialchars($result['cantidadRecibida'])?></th>
+                    <th align='right'><?php echo htmlspecialchars($result['cantidadRecibida'])?></th>
                 </tr>
             </tfoot>
         </table>

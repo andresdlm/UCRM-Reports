@@ -12,16 +12,16 @@
                 <?php foreach ($result['paymentMethods'] as $paymentMethod) { ?>
                     <tr>
                         <td><?php echo htmlspecialchars($paymentMethod['name'])?></td>
-                        <td><?php echo htmlspecialchars($paymentMethod['count'])?></td>
-                        <td><?php echo htmlspecialchars($paymentMethod['amount'])?></td>
+                        <td align='right'><?php echo htmlspecialchars($paymentMethod['count'])?></td>
+                        <td align='right'><?php echo htmlspecialchars($paymentMethod['amount'])?></td>
                     </tr>
                 <?php } ?>
             </tbody>
             <tfoot>
                 <tr>
                     <th>Totales</th>
-                    <th><?php echo htmlspecialchars($result['totalCount'])?></th>
-                    <th><?php echo htmlspecialchars($result['totalAmount'])?></th>
+                    <th align='right'><?php echo htmlspecialchars($result['totalCount'])?></th>
+                    <th align='right'><?php echo htmlspecialchars($result['totalAmount'])?></th>
                 </tr>
             </tfoot>
         </table>
