@@ -40,17 +40,17 @@
                                 </div>
 
                                 <div class="col-3">
-                                    <label class="mb-0" for="frm-since"><small>Desde:</small></label>
+                                    <label class="mb-0" for="frm-since"><small>Fecha de activación desde:</small></label>
                                     <input type="date" name="since" id="frm-since" placeholder="YYYY-MM-DD" class="form-control form-control-sm" value="<?php echo htmlspecialchars($result['since'] ?? '', ENT_QUOTES); ?>">
                                 </div>
 
                                 <div class="col-3">
-                                    <label class="mb-0" for="frm-until"><small>Hasta:</small></label>
+                                    <label class="mb-0" for="frm-until"><small>Fecha de activación hasta:</small></label>
                                     <input type="date" name="until" id="frm-until" placeholder="YYYY-MM-DD" class="form-control form-control-sm" value="<?php echo htmlspecialchars($result['until'] ?? '', ENT_QUOTES); ?>">
                                 </div>
 
                                 <div class="col-3">
-                                    <label class="mb-0" for="frm-until"><small>Tipo:</small></label>
+                                    <label class="mb-0" for="frm-until"><small>Tipo de cliente:</small></label>
                                     <select name="clientType" id="frm-clientType" class="form-control form-control-sm">
                                         <option value="0">Todos</option>
                                         <option value="1">Residencial</option>

@@ -87,8 +87,13 @@ if (
         if($service['activeFrom'] != NULL && date($service['activeFrom']) <= date($parameters['registrationDateTo'])) {
             
             if($service['servicePlanType'] == 'Internet') {
-                $internetPlans[$service['servicePlanId']]['countServices'] = $internetPlans[$service['servicePlanId']]['countServices'] + 1;
-                $countInternetServices = $countInternetServices + 1;
+                if($internetPlans[$service['servicePlanId']] != NULL){
+                    $internetPlans[$service['servicePlanId']]['countServices'] = $internetPlans[$service['servicePlanId']]['countServices'] + 1;
+                    $countInternetServices = $countInternetServices + 1;
+                }
+                if($internetPlans[$service['servicePlanId']] == NULL) {
+                    console_log($service);
+                }
             } else {
                 $generalPlans[$service['servicePlanId']]['countServices'] = $generalPlans[$service['servicePlanId']]['countServices'] + 1;
                 $countGeneralServices = $countGeneralServices + 1;

@@ -1,7 +1,7 @@
 {
   "version": "1",
   "information": {
-    "name": "conatel-report",
+    "name": "service-report",
     "displayName": "Reporte de servicios",
     "description": "Muestra el reporte de cuantos servicios activos hay por plan de servicio.",
     "url": "https://github.com/andresdlm/UCRM-Reports",

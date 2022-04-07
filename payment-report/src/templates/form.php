@@ -56,12 +56,12 @@
                                 </div>
 
                                 <div class="col-3">
-                                    <label class="mb-0" for="frm-since"><small>Desde:</small></label>
+                                    <label class="mb-0" for="frm-since"><small>Fecha de pago desde:</small></label>
                                     <input type="date" name="since" id="frm-since" placeholder="YYYY-MM-DD" class="form-control form-control-sm" value="<?php echo htmlspecialchars($result['since'] ?? '', ENT_QUOTES); ?>">
                                 </div>
 
                                 <div class="col-3">
-                                    <label class="mb-0" for="frm-until"><small>Hasta:</small></label>
+                                    <label class="mb-0" for="frm-until"><small>Fecha de pago hasta:</small></label>
                                     <input type="date" name="until" id="frm-until" placeholder="YYYY-MM-DD" class="form-control form-control-sm" value="<?php echo htmlspecialchars($result['until'] ?? '', ENT_QUOTES); ?>">
                                 </div>
 
