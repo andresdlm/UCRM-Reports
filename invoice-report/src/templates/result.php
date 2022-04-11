@@ -1,5 +1,42 @@
 <div class="row mb-4">
     <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <p><strong>Reporte generado el 
+                    <?php 
+                    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+                    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+                    
+                    echo $dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;            
+                    ?>
+                </strong></p><br>
+                <p>
+                <?php 
+                    if($result['organizationId'] == 0){
+                        echo 'En todas las organizaciones';
+                    } else {
+                        echo 'En la organización ' . $result['organizationName'];
+                    }
+                ?>, entre <?php echo htmlspecialchars($result['createdDateFrom'])?> y 
+                <?php echo htmlspecialchars($result['createdDateTo'])?> se van a vencer un total de 
+                <?php echo htmlspecialchars($result['cantidadFacturas'])?> facturas, las cuales 
+                <?php 
+                    if($result['clientType'] == 1) {
+                        echo 'son de clientes de tipo residencial y '; 
+                    } else if ($result['clientType'] == 2) {
+                        echo 'son de clientes de tipo empresarial y ';
+                    }
+                ?>suman $
+                <?php echo htmlspecialchars($result['cantidadSinImpuestos'])?> para el sub total, $
+                <?php echo htmlspecialchars($result['cantidadImpuestos'])?> para el impuesto y $
+                <?php echo htmlspecialchars($result['cantidadTotal'])?> en total. Falta por cobrar $
+                <?php echo htmlspecialchars($result['cantidadTotalSinPagar'])?>.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+
         <table class="table table-hover table-bordered bg-light mb-0">
             <thead class="thead-dark">
                 <tr>

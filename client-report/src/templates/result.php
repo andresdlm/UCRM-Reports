@@ -1,5 +1,41 @@
 <div class="row mb-4">
     <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <p><strong>Reporte generado el 
+                    <?php 
+                    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+                    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+                    
+                    echo $dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;            
+                    ?>
+                </strong></p><br>
+                <p>
+                <?php 
+                    if($result['organizationId'] == 0){
+                        echo 'En todas las organizaciones';
+                    } else {
+                        echo 'En la organización ' . $result['organizationName'];
+                    }
+                ?>, entre 
+                <?php echo htmlspecialchars($result['registrationDateFrom'])?> y 
+                <?php echo htmlspecialchars($result['registrationDateTo'])?> se han activado el total de 
+                <?php echo htmlspecialchars($result['clientsCount'])?> clientes 
+                <?php 
+                    if($result['clientType'] == 1) {
+                        echo 'de tipo residencial '; 
+                    } else if ($result['clientType'] == 2) {
+                        echo 'de tipo empresarial ';
+                    }
+                ?>
+                que han generado la cantidad 
+                de nuevos ingresos de $<?php echo htmlspecialchars(round($result['plansTotalPrice'], 2))?>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
         <table class="table table-hover table-bordered bg-light mb-0">
             <thead class="thead-dark">
                 <tr>

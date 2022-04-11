@@ -109,6 +109,13 @@ if (
         $cantidadTotalSinPagar = $cantidadTotalSinPagar + $invoice['amountToPay'];
     }
 
+    if($parameters['organizationId'] != 0){
+        $organization = $api->get('organizations/' . $parameters['organizationId']);
+    } else {
+        $organization = NULL;
+    }
+
+
     $result = [
         'invoices' => array_values($invoices),
         'cantidadFacturas' => count($invoices),
@@ -117,6 +124,11 @@ if (
         'cantidadTotal' => round($cantidadTotal, 2),
         'cantidadTotalSinPagar' => round($cantidadTotalSinPagar, 2),
         'domain' => $_SERVER['HTTP_HOST'],
+        'organizationId' => $parameters['organizationId'],
+        'organizationName' => $organization['name'],
+        'createdDateFrom' => $parameters['createdDateFrom'],
+        'createdDateTo' => $parameters['createdDateTo'],
+        'clientType' => $parameters['clientType'],
     ];
 
 }

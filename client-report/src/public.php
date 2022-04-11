@@ -63,9 +63,7 @@ if (
         $clients = $api->get('clients/', ['organizationId' => $_GET['organization']]);
         $services = $api->get('clients/services', ['organizationId' => $_GET['organization']]);
     }
-    
-    console_log($clients);
-    console_log($services);
+
     
     $clientsDict = [];
     foreach($services as $service) {
@@ -89,10 +87,11 @@ if (
     }
 
     $plansTotalPrice = 0;
+    $clientsDictionary = [];
     if($parameters['clientType'] == 0) {
         foreach($clients as $client){
             if(in_array($client['id'], $clientsId)){
-                $clientsDict[$client['id']] = [
+                $clientsDictionary[$client['id']] = [
                     'id' => $client['id'],
                     'firstName' => $client['firstName'],
                     'lastName' => $client['lastName'],
@@ -105,13 +104,13 @@ if (
                     'activeFrom' => $clientsDict[$client['id']]['activeFrom'],
                     'totalPrice' => $clientsDict[$client['id']]['totalPrice'],
                 ];
-                $plansTotalPrice = $plansTotalPrice + $clientsDict[$client['id']]['servicePlanPrice'];
+                $plansTotalPrice = $plansTotalPrice + $clientsDictionary[$client['id']]['servicePlanPrice'];
             }
         }
     } else {
         foreach($clients as $client){
             if($client['clientType'] == $parameters['clientType'] && in_array($client['id'], $clientsId)){
-                $clientsDict[$client['id']] = [
+                $clientsDictionary[$client['id']] = [
                     'id' => $client['id'],
                     'firstName' => $client['firstName'],
                     'lastName' => $client['lastName'],
@@ -124,18 +123,28 @@ if (
                     'activeFrom' => $clientsDict[$client['id']]['activeFrom'],
                     'totalPrice' => $clientsDict[$client['id']]['totalPrice'],
                 ];
-                $plansTotalPrice = $plansTotalPrice + $clientsDict[$client['id']]['servicePlanPrice'];
+                $plansTotalPrice = $plansTotalPrice + $clientsDictionary[$client['id']]['servicePlanPrice'];
             }
         }
     }
 
-    console_log($clientsDict);
+    if($parameters['organizationId'] != 0){
+        $organization = $api->get('organizations/' . $parameters['organizationId']);
+    } else {
+        $organization = NULL;
+    }
+
 
     $result = [
-        'clients' => array_values($clientsDict),
-        'clientsCount' => count($clientsDict),
+        'clients' => $clientsDictionary,
+        'clientsCount' => count($clientsDictionary),
         'plansTotalPrice' => $plansTotalPrice,
         'domain' => $_SERVER['HTTP_HOST'],
+        'organizationId' => $parameters['organizationId'],
+        'organizationName' => $organization['name'],
+        'registrationDateFrom' => $parameters['registrationDateFrom'],
+        'registrationDateTo' => $parameters['registrationDateTo'],
+        'clientType' => $parameters['clientType'],
     ];
 
 }

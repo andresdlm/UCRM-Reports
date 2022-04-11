@@ -64,8 +64,6 @@ if (
         }
     }
     $payments = $api->get('payments/');
-    
-    console_log($payments);
 
     if($parameters['paymentMethodId'] == '0') {
         if($parameters['organizationId'] != 0) {
@@ -105,12 +103,33 @@ if (
         $cantidadRecibida = $cantidadRecibida + $payment['amount'];
     }
 
+    if($parameters['organizationId'] != 0){
+        $organization = $api->get('organizations/' . $parameters['organizationId']);
+    } else {
+        $organization['name'] = '';
+    }
+
+    $paymentMethods = $api->get('payment-methods/');
+    $paymentMethodName = '';
+    
+    foreach($paymentMethods as $paymentMethod) {
+        if($paymentMethod['id'] == $parameters['paymentMethodId']) {
+            $paymentMethodName = $paymentMethod['name'];
+        }
+    }
+    
     $result = [
         'payments' => array_values($paymentFiltered),
         'cantidadPagos' => count($paymentFiltered),
         'cantidadRecibida' => $cantidadRecibida,
         'domain' => $_SERVER['HTTP_HOST'],
+        'parameters' => $parameters,
+        'organizationName' => $organization['name'],
+        'paymentMethodName' => $paymentMethodName,
+        'paymentMethodId' => $parameters['paymentMethodId']
     ];
+
+    console_log($result);
 
 }
 
