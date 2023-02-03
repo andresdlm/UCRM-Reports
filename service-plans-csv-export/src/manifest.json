@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "information": {
+    "name": "service-plans-csv-export",
+    "displayName": "Service Plans CSV export",
+    "description": "Configurable export of service plans into CSV.",
+    "url": "https://github.com/Ubiquiti-App/UCRM-plugins/tree/master/plugins/invoice-csv-export",
+    "version": "1.0",
+    "ucrmVersionCompliancy": {
+      "min": "2.14.0-beta4",
+      "max": null
+    },
+    "unmsVersionCompliancy": {
+      "min": "1.0.0-dev.1",
+      "max": null
+    },
+    "author": "Andres Linarez"
+  },
+  "menu": [
+    {
+      "key": "Reports",
+      "label": "Service Plans CSV export",
+      "type": "admin",
+      "target": "iframe"
+    }
+  ]
+}

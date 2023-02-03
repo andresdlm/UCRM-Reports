@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "information": {
+    "name": "client-csv-export",
+    "displayName": "Client CSV export",
+    "description": "Configurable export of clients into CSV.",
+    "url": "https://github.com/Ubiquiti-App/UCRM-plugins/tree/master/plugins/invoice-csv-export",
+    "version": "1.0",
+    "ucrmVersionCompliancy": {
+      "min": "2.14.0-beta4",
+      "max": null
+    },
+    "unmsVersionCompliancy": {
+      "min": "1.0.0-dev.1",
+      "max": null
+    },
+    "author": "Andres Linarez"
+  },
+  "menu": [
+    {
+      "key": "Reports",
+      "label": "Client CSV export",
+      "type": "admin",
+      "target": "iframe"
+    }
+  ]
+}

@@ -56,9 +56,13 @@ if (
         'registrationDateTo' => $trimNonEmpty((string) $_GET['until']),
     ];
 
+    $servicePlans = $api->get('service-plans');
+    console_log($servicePlans);
+
     if($parameters['organizationId'] == 0) {
         $clients = $api->get('clients/');
         $services = $api->get('clients/services');
+        console_log($services);
     } else {
         $clients = $api->get('clients/', ['organizationId' => $_GET['organization']]);
         $services = $api->get('clients/services', ['organizationId' => $_GET['organization']]);
